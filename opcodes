@@ -1,0 +1,17 @@
+
+ADD
+0x01 - add with two numbers
+0x02 - add a number to a memory val
+0x03 - add a memory value to a memory value
+
+MUL
+0x04 - mul with two numbers
+0x05 - mul a number with a memory val
+0x06 - mul two memory vals
+
+
+DIV
+0x07 - div with two numbers
+0x08 - div a number by a mem val
+0x09 - div a mem val by a mem val
+0xA - div a mem val by a number

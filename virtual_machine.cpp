@@ -42,10 +42,6 @@ void Machine::add(int a, int b){
     this->pc += 9;
 }
 
-void Machine::min(int a, int b){
-    this->ir = a - b;
-    this->pc += 9;
-}
 
 void Machine::mul(int a, int b){
     this->ir = a * b;
@@ -66,10 +62,37 @@ void Machine::execute(){
         case 0:
             this->run = false;
             break;
-        case 1:
-            std::cout << this->get_next_arg() << "\n";
+        case 0x01:
+            this->add(this->get_next_arg(), this->get_next_arg(5));
+            break;
+        case 0x02:
+            this->add(this->get_next_arg(), this->get_arg(this->get_next_arg(5)));
+            break;
+        case 0x03:
             this->add(this->get_arg(this->get_next_arg()), this->get_arg(this->get_next_arg(5)));
             break;
+        case 0x04:
+            this->mul(this->get_next_arg(), this->get_next_arg(5));
+            break;
+        case 0x05:
+            this->mul(this->get_next_arg(), this->get_arg(this->get_next_arg(5)));
+            break;
+        case 0x06:
+            this->mul(this->get_arg(this->get_next_arg()), this->get_arg(this->get_next_arg(5)));
+            break;
+        case 0x07:
+            this->div(this->get_next_arg(), this->get_next_arg(5));
+            break;
+        case 0x08:
+            this->div(this->get_next_arg(), this->get_arg(this->get_next_arg(5)));
+            break;
+        case 0x09:
+            this->div(this->get_arg(this->get_next_arg()), this->get_arg(this->get_next_arg(5)));
+            break;
+        case 0xA:
+            this->div( this->get_arg(this->get_next_arg()), this->get_next_arg(5));
+            break;
+
 
         default:
             std::cout << "Failed to execute instruction : unknown opcode";
@@ -80,7 +103,7 @@ void Machine::execute(){
 int main(){
     Machine machine(128, 128);
 
-    uint8_t instructions[] = {1,0,0,0,0,0,0,0,4,0};
+    uint8_t instructions[] = {1, 0,0,1,1 ,0,0,0,4, 0x02, 0,0,0,1, 0,0,0,0, 0x04, 0,0,0,10, 0,0,0,4, 0};
     uint8_t data[] = {1,0,0,4,0,0,0,10};
 
     machine.data_mem = data;

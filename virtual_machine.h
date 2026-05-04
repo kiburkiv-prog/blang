@@ -15,7 +15,6 @@ public:
     int get_arg(int);
 
     void add(int, int);
-    void min(int, int);
     void mul(int, int);
     void div(int, int);
 
