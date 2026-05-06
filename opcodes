@@ -1,4 +1,3 @@
-
 ADD
 0x01 - add with two numbers
 0x02 - add a number to a memory val
@@ -9,9 +8,23 @@ MUL
 0x05 - mul a number with a memory val
 0x06 - mul two memory vals
 
-
 DIV
 0x07 - div with two numbers
 0x08 - div a number by a mem val
 0x09 - div a mem val by a mem val
 0xA - div a mem val by a number
+
+COM
+0xA1 - comapre two mem vals
+
+PTR
+0xA2 - print starting from integer adress;
+
+LOAD
+0xA3 - load a number to memory
+
+REM
+0xA4 - remove a value by integer adress
+
+GO
+0xA5 - set program counter to an integer adress

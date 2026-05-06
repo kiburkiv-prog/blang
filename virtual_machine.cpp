@@ -35,6 +35,10 @@ int Machine::get_arg(int addr){
 
 }
 
+uint8_t Machine::get_next_arg_byte(int addr = 1){
+    return this->inst_mem[pc + addr];
+}
+
 
 //INTEGER OPERATIONS
 void Machine::add(int a, int b){
@@ -51,6 +55,85 @@ void Machine::mul(int a, int b){
 void Machine::div(int a, int b){
     this->ir = a / b;
     this->pc += 9;
+}
+
+//Boolean operations
+//comparing two numbers
+void Machine::com(uint8_t type, int a, int b){
+    bool expression = false;
+
+    switch(type){
+        case 1:
+            expression = a == b;
+            break;
+        case 2:
+            expression = a > b;
+            break;
+        case 3:
+            expression = a < b;
+            break;
+        case 4:
+            expression = a >= b;
+            break;
+        case 5:
+            expression = a <= b;
+            break;
+        case 6:
+            expression = a != b;
+            break;
+    }
+
+    this->br = expression;
+    this->pc += 10;
+}
+
+//Memory operations
+void Machine::load(uint8_t type, int addr, int num){
+    switch(type){
+        //Byte mode
+        case 1:
+            this->data_mem[addr] = num;
+            break;
+        //Integer (32-bit) mode
+        case 2:
+            this->data_mem[addr] = num >> 24;
+            this->data_mem[addr + 1] = num >> 16;
+            this->data_mem[addr + 2] = num >> 8;
+            this->data_mem[addr + 3] = num;
+
+            break;
+    }
+    this->pc += 10;
+}
+
+void Machine::rem(uint8_t type, int addr){
+    switch(type){
+        //Byte mode
+        case 1:
+            this->data_mem[addr] = 0;
+            break;
+            //Integer (32-bit) mode
+        case 2:
+            this->data_mem[addr] = 0;
+            this->data_mem[addr + 1] = 0;
+            this->data_mem[addr + 2] = 0;
+            this->data_mem[addr + 3] = 0;
+            break;
+    }
+    this->pc += 10;
+}
+
+
+//Program operations
+void Machine::go(int addr){
+    this->pc = this->inst_mem[addr];
+}
+
+
+//Other operations
+void Machine::ptr(int start){
+    std::cout << this->data_mem + start;
+    this->pc += 5;
 }
 
 
@@ -92,10 +175,24 @@ void Machine::execute(){
         case 0xA:
             this->div( this->get_arg(this->get_next_arg()), this->get_next_arg(5));
             break;
-
+        case 0xA1:
+            this->com(this->get_next_arg_byte(), this->get_arg(this->get_next_arg(2)), this->get_arg(this->get_next_arg(6)));
+        case 0xA2:
+            this->ptr(this->get_next_arg());
+            break;
+        case 0xA3:
+            this->load(this->get_next_arg_byte(), this->get_next_arg(2), this->get_next_arg(6));
+            break;
+        case 0xA4:
+            this->rem(this->get_next_arg_byte(), this->get_next_arg(2));
+            break;
+        case 0xA5:
+            this->go(this->get_next_arg());
+            break;
 
         default:
-            std::cout << "Failed to execute instruction : unknown opcode";
+            std::cout << "Failed to execute instruction : unknown opcode\n";
+            this->run = false;
     }
 }
 
@@ -103,8 +200,8 @@ void Machine::execute(){
 int main(){
     Machine machine(128, 128);
 
-    uint8_t instructions[] = {1, 0,0,1,1 ,0,0,0,4, 0x02, 0,0,0,1, 0,0,0,0, 0x04, 0,0,0,10, 0,0,0,4, 0};
-    uint8_t data[] = {1,0,0,4,0,0,0,10};
+    uint8_t instructions[] = {0xA2, 0,0,0,0, 0};
+    uint8_t data[] = {72,101,108,108,111,32,87,111,114,108,100, '\0'};
 
     machine.data_mem = data;
     machine.inst_mem = instructions;
@@ -114,6 +211,6 @@ int main(){
         machine.execute();
     }
 
-    std::cout << machine.ir;
+    //std::cout << machine.ir;
     return 0;
 }
