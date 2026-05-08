@@ -1,1 +1,2 @@
 g++ -o vm virtual_machine.cpp
+g++ -o asm asm.cpp

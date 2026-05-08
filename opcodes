@@ -1,3 +1,27 @@
+NEW OPCODE SYSTEM:
+Opcodes now 16 bits;
+They have 15 types;
+0 - NO ARGUMENTS
+1 - TWO NUMBERS
+2 - NUMBER AND MEM VAL
+3 - MEM VAL AND NUMBER
+4 - NUMBER, NUMBER, MEM VAL
+5 - NUMBER, MEM VAL, NUMBER
+6 - MEM VAL
+7 - NUMBER
+8 - MEM VAL, MEM VAL
+
+---NOT USED YET---
+9                 }
+A                 }
+B                 }
+C                 }
+D                 }
+E                 }
+F                 }
+---NOT USED YET---
+
+
 ADD
 0x01 - add with two numbers
 0x02 - add a number to a memory val
