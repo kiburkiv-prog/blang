@@ -1,9 +1,11 @@
 #include "virtual_machine.h"
 #include <cstdint>
+#include <fstream>
+#include <filesystem>
 
 Machine::Machine(int data, int inst){
-    //this->data_mem = new uint8_t[data];
-    //this->inst_mem = new uint8_t[inst];
+    this->data_mem = new uint8_t[data];
+    this->inst_mem = new uint8_t[inst];
 }
 
 
@@ -120,7 +122,7 @@ void Machine::rem(uint8_t type, int addr){
             this->data_mem[addr + 3] = 0;
             break;
     }
-    this->pc += 10;
+    this->pc += 6;
 }
 
 
@@ -138,73 +140,77 @@ void Machine::ptr(int start){
 
 
 void Machine::execute(){
-    uint8_t opcode = this->inst_mem[this->pc];
+    uint16_t opcode = this->inst_mem[this->pc];
+    opcode = (opcode << 8) + this->inst_mem[this->pc + 1];
+    this->pc += 1;
 
 
     switch(opcode){
         case 0:
             this->run = false;
             break;
-        case 0x01:
+        case 0x1001:
             this->add(this->get_next_arg(), this->get_next_arg(5));
             break;
-        case 0x02:
+        case 0x2001:
             this->add(this->get_next_arg(), this->get_arg(this->get_next_arg(5)));
             break;
-        case 0x03:
+        case 0x8001:
             this->add(this->get_arg(this->get_next_arg()), this->get_arg(this->get_next_arg(5)));
             break;
-        case 0x04:
+        case 0x1002:
             this->mul(this->get_next_arg(), this->get_next_arg(5));
             break;
-        case 0x05:
+        case 0x2002:
             this->mul(this->get_next_arg(), this->get_arg(this->get_next_arg(5)));
             break;
-        case 0x06:
+        case 0x8002:
             this->mul(this->get_arg(this->get_next_arg()), this->get_arg(this->get_next_arg(5)));
             break;
-        case 0x07:
+        case 0x1003:
             this->div(this->get_next_arg(), this->get_next_arg(5));
             break;
-        case 0x08:
+        case 0x2003:
             this->div(this->get_next_arg(), this->get_arg(this->get_next_arg(5)));
             break;
-        case 0x09:
+        case 0x8003:
             this->div(this->get_arg(this->get_next_arg()), this->get_arg(this->get_next_arg(5)));
             break;
-        case 0xA:
+        case 0x3003:
             this->div( this->get_arg(this->get_next_arg()), this->get_next_arg(5));
             break;
-        case 0xA1:
+        case 0x9004:
             this->com(this->get_next_arg_byte(), this->get_arg(this->get_next_arg(2)), this->get_arg(this->get_next_arg(6)));
-        case 0xA2:
+        case 0x6005:
             this->ptr(this->get_next_arg());
             break;
-        case 0xA3:
+        case 0x5006:
             this->load(this->get_next_arg_byte(), this->get_next_arg(2), this->get_next_arg(6));
             break;
-        case 0xA4:
+        case 0x2007:
             this->rem(this->get_next_arg_byte(), this->get_next_arg(2));
             break;
-        case 0xA5:
+        case 0x6008:
             this->go(this->get_next_arg());
             break;
 
         default:
-            std::cout << "Failed to execute instruction : unknown opcode\n";
+            std::cout << "Failed to execute instruction : unknown opcode :" <<opcode<< "\n";
             this->run = false;
     }
 }
 
 
-int main(){
+int main(int argc, char* argv[]){
     Machine machine(128, 128);
 
-    uint8_t instructions[] = {0xA2, 0,0,0,0, 0};
-    uint8_t data[] = {72,101,108,108,111,32,87,111,114,108,100, '\0'};
 
-    machine.data_mem = data;
-    machine.inst_mem = instructions;
+
+    std::ifstream file(argv[1]);
+
+    for(int i = 0;i < std::filesystem::file_size(argv[1]); i++){
+        machine.inst_mem[i] = (uint8_t)file.get();
+    }
 
 
     while(machine.run){

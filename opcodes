@@ -1,19 +1,19 @@
-NEW OPCODE SYSTEM:
-Opcodes now 16 bits;
+﻿NEW OPCODE SYSTEM:
+Opcodes are now 16 bits;
 They have 15 types;
-0 - NO ARGUMENTS
-1 - TWO NUMBERS
-2 - NUMBER AND MEM VAL
-3 - MEM VAL AND NUMBER
-4 - NUMBER, NUMBER, MEM VAL
-5 - NUMBER, MEM VAL, NUMBER
-6 - MEM VAL
-7 - NUMBER
-8 - MEM VAL, MEM VAL
+0 - NO ARGUMENTS #
+1 - TWO NUMBERS #
+2 - NUMBER AND MEM VAL #
+3 - MEM VAL AND NUMBER #
+4 - NUMBER, NUMBER, MEM VAL #
+5 - NUMBER, MEM VAL, NUMBER #
+6 - MEM VAL#
+7 - NUMBER #
+8 - MEM VAL, MEM VAL#
+9 - NUMBER, MEM VAL, MEM VAL#
+A - NUMBER NUMBER NUMBER
 
----NOT USED YET---
-9                 }
-A                 }
+------------------
 B                 }
 C                 }
 D                 }
@@ -21,34 +21,21 @@ E                 }
 F                 }
 ---NOT USED YET---
 
+BRK - 000
 
-ADD
-0x01 - add with two numbers
-0x02 - add a number to a memory val
-0x03 - add a memory value to a memory value
+ADD - 001
 
-MUL
-0x04 - mul with two numbers
-0x05 - mul a number with a memory val
-0x06 - mul two memory vals
+MUL - 002
 
-DIV
-0x07 - div with two numbers
-0x08 - div a number by a mem val
-0x09 - div a mem val by a mem val
-0xA - div a mem val by a number
+DIV - 003
 
-COM
-0xA1 - comapre two mem vals
+COM - 004
 
-PTR
-0xA2 - print starting from integer adress;
+PTR - 005
 
-LOAD
-0xA3 - load a number to memory
+LOAD - 006
 
-REM
-0xA4 - remove a value by integer adress
+REM - 007
 
-GO
-0xA5 - set program counter to an integer adress
+GO - 008
+
